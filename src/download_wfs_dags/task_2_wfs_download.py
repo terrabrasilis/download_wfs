@@ -178,8 +178,6 @@ class WFSDownload(TaskBase):
 
         import os, math, requests
         
-        self.uf_list = ['AC']
-        
         for uf in self.uf_list:
             
             self.get_period_by_uf(uf)
