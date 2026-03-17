@@ -1,3 +1,5 @@
+from time import time
+
 from download_wfs_dags.task_base import TaskBase
 from download_wfs_configuration.dag_config import DAG_Configuration
 from wtf_download_utils.utils import Utils
@@ -142,7 +144,8 @@ class WFSDownload(TaskBase):
             'CQL_FILTER': filters
         }
 
-        response = requests.get(base_url, params=params, timeout=120)
+        session = requests.Session()
+        response = session.get(base_url, params=params, timeout=120)
 
         if response.status_code != 200:
             self.logger.error(f"Error fetching total for {type_name}: {response.text}")
@@ -176,8 +179,10 @@ class WFSDownload(TaskBase):
     
     def get(self):
 
-        import os, math, requests
+        import os, math, requests, time
         
+        session = requests.Session()
+                
         for uf in self.uf_list:
             
             self.get_period_by_uf(uf)
@@ -218,10 +223,18 @@ class WFSDownload(TaskBase):
                         'startIndex': start_index,
                         'outputFormat': 'SHAPE-ZIP',
                         'CQL_FILTER': filter
-                    }
-
-                    response = requests.get(base_url, params=params, timeout=180)
-                    print(response.url)
+                    }                    
+                    
+                    for attempt in range(5):
+                        try:
+                            response = session.get(base_url, params=params, timeout=180)
+                            break
+                        except requests.exceptions.ReadTimeout:
+                            self.logger.warning(f"Timeout for {uf} page {pagina}. Retry {attempt+1}/5")
+                            time.sleep(10)
+                    else:
+                        self.logger.error(f"Failed to download page {pagina} for {uf}")
+                        continue
 
                     if response.status_code != 200:
                         self.logger.error(f"Error fetching data for {type_name}: {response.text}")
@@ -235,7 +248,6 @@ class WFSDownload(TaskBase):
                     
                     download_file = True
                     file_exists = self.verify_file_exists(folder_path, file_name)
-                    
                     
                     if file_exists:
                         self.logger.info(f"File already exists in database: {folder_path}")
