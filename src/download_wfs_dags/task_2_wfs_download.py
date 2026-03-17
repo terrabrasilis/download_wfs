@@ -230,7 +230,7 @@ class WFSDownload(TaskBase):
                             response = session.get(base_url, params=params, timeout=180)
                             break
                         except requests.exceptions.ReadTimeout:
-                            self.logger.warning(f"Timeout for {uf} page {pagina}. Retry {attempt+1}/5")
+                            self.logger.info(f"Timeout for {uf} page {pagina}. Retry {attempt+1}/5")
                             time.sleep(10)
                     else:
                         self.logger.error(f"Failed to download page {pagina} for {uf}")
