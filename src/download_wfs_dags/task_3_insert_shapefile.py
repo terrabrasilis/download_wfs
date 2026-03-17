@@ -29,11 +29,12 @@ class InsertShapeFile(TaskBase):
         self.logger.info(f"Updated imported status for folder: {folder}")  
 
     def insert_shapefile(self):
+        import pandas as pd  # type: ignore
         import geopandas as gpd  # type: ignore
         import os
         import tempfile
-        from sqlalchemy import text
-        from shapely.geometry import MultiPolygon
+        from sqlalchemy import text # type: ignore
+        from shapely.geometry import MultiPolygon # type: ignore
 
         engine = self.dag_config.engine        
 
@@ -59,12 +60,42 @@ class InsertShapeFile(TaskBase):
                             lambda geom: MultiPolygon([geom]) if geom.geom_type == "Polygon" else geom
                         )
 
+                        # converter datas
+                        gdf["dat_criaca"] = pd.to_datetime(gdf["dat_criaca"], errors="coerce")
+                        gdf["data_atual"] = pd.to_datetime(gdf["data_atual"], errors="coerce")
+
                         # converter geometria para WKT
-                        gdf["geometry"] = gdf.geometry.to_wkt()
+                        gdf["geometry"] = gdf.geometry.apply(lambda g: g.wkt if g else None)
+
+                        # garantir ordem das colunas
+                        columns = [
+                            "cod_imovel",
+                            "status_imo",
+                            "dat_criaca",
+                            "data_atual",
+                            "area",
+                            "condicao",
+                            "uf",
+                            "municipio",
+                            "cod_munici",
+                            "m_fiscal",
+                            "tipo_imove",
+                            "geometry"
+                        ]
+
+                        gdf = gdf[columns]
 
                         # criar csv temporário
                         tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".csv")
-                        gdf.to_csv(tmp.name, index=False)
+
+                        gdf.to_csv(
+                            tmp.name,
+                            index=False,
+                            sep=",",
+                            na_rep="\\N"  # PostgreSQL NULL
+                        )
+
+                        self.logger.info(f"Temporary CSV created: {tmp.name}")
 
                         with engine.begin() as conn:
 
