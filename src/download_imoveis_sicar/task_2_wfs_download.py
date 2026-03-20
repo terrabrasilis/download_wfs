@@ -31,6 +31,8 @@ class WFSDownload(TaskBase):
             execution_end_date=end_day
         )
         
+        self.logger.info(f"Runs today: {len(runs_today)}")
+        
         self.is_first_execution = len(runs_today) == 0
         return self.is_first_execution
         
@@ -204,7 +206,7 @@ class WFSDownload(TaskBase):
 
             self.filters = []
             if self.year == self.current_year:
-                self.filters = [f"dat_criacao >= '{self.year}-01-01T00:00:00' AND dat_criacao <= '{self.year}-12-31T23:59:59'", f"data_atualizacao >= '{self.today}T00:00:00' AND data_atualizacao <= '{self.today}T23:59:59'"]
+                self.filters = [f"dat_criacao >= '{self.year}-{self.today.month:02d}-01T00:00:00' AND dat_criacao <= '{self.year}-{self.today.month:02d}-31T23:59:59'", f"data_atualizacao >= '{self.today}T00:00:00' AND data_atualizacao <= '{self.today}T23:59:59'"]
             else:
                 self.filters = [f"dat_criacao >= '{self.year}-01-01T00:00:00' AND dat_criacao <= '{self.year}-12-31T23:59:59'"]
 
