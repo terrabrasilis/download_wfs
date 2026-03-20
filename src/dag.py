@@ -8,16 +8,16 @@ from airflow import DAG # type: ignore
 from airflow.operators.python import PythonVirtualenvOperator, ShortCircuitOperator # type: ignore
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator # type: ignore
 
-from download_wfs_dags.check_wfs_download_config import check_wfs_download_config
-from download_wfs_dags.task_2_wfs_download import task_2_wfs_download
-from download_wfs_dags.task_3_insert_shapefile import task_3_insert_shape_file
-from download_wfs_dags.task_4_check_if_trigger import task_4_check_if_trigger
+from download_imoveis_sicar.check_wfs_download_config import check_wfs_download_config
+from download_imoveis_sicar.task_2_wfs_download import task_2_wfs_download
+from download_imoveis_sicar.task_3_insert_shapefile import task_3_insert_shape_file
+from download_imoveis_sicar.task_4_check_if_trigger import task_4_check_if_trigger
 
 requirements = ['geopandas', 'geoalchemy2']
     
 venv_path = f"/opt/airflow/venv/inpe/download_wfs/venv"
 
-with DAG(f'download_wfs_dag',
+with DAG(f'download_imoveis_sicar',
     schedule_interval='@daily',
     default_args={'start_date': datetime(2025, 1, 1),},
     tags=['download', 'wfs'],
@@ -59,7 +59,7 @@ with DAG(f'download_wfs_dag',
     
     trigger_self = TriggerDagRunOperator(
         task_id='trigger_self',
-        trigger_dag_id=f'download_wfs_dag',
+        trigger_dag_id=f'download_imoveis_sicar',
         conf={"message": "Rescheduling the DOWNLOAD_WFS for the next cycle."},
     )
     

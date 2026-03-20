@@ -1,7 +1,7 @@
 
-from download_wfs_configuration.dag_config import DAG_Configuration
-from download_wfs_dags.task_base import TaskBase
-from wtf_download_utils.utils import Utils
+from download_imoveis_sicar_configuration.dag_config import DAG_Configuration
+from download_imoveis_sicar.task_base import TaskBase
+from download_imoveis_sicar_utils.utils import Utils
 
 
 class InsertShapeFile(TaskBase):
@@ -191,8 +191,8 @@ def task_3_insert_shape_file(project_dir: str):
     import sys
     sys.path.append(project_dir)
     
-    from download_wfs_dags.task_3_insert_shapefile import InsertShapeFile
-    from download_wfs_configuration.dag_config import DAG_Configuration
+    from download_imoveis_sicar.task_3_insert_shapefile import InsertShapeFile
+    from download_imoveis_sicar_configuration.dag_config import DAG_Configuration
 
     dag_config = DAG_Configuration()
     task = InsertShapeFile(dag_config)

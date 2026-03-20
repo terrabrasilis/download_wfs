@@ -1,5 +1,5 @@
-from wtf_download_utils.logger import TasksLogger
-from download_wfs_configuration.dag_config import DAG_Configuration
+from download_imoveis_sicar_utils.logger import TasksLogger
+from download_imoveis_sicar_configuration.dag_config import DAG_Configuration
 
 class TaskBase:
 

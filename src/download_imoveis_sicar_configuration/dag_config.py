@@ -1,15 +1,15 @@
 
 import json
 from pathlib import Path
-from airflow.hooks.base import BaseHook
-from download_wfs_dags.output_database import OutputDatabase
-from wtf_download_utils.utils import Utils
-from airflow.models import Variable
+from airflow.hooks.base import BaseHook # type: ignore
+from download_imoveis_sicar.output_database import OutputDatabase
+from download_imoveis_sicar_utils.utils import Utils
+from airflow.models import Variable # type: ignore
 
 class DAG_Configuration:
     
     def __init__(self):
-        self.conf_path = Path(__file__).resolve().parent.parent / "download_wfs_configuration" / "dag-config.json"
+        self.conf_path = Path(__file__).resolve().parent.parent / "download_imoveis_sicar_configuration" / "dag-config.json"
         self.dag_config_json = self.conn_id = self.data_source = self.server = self.base_url = self.database = self.engine = self.utils = self.required_tables = self.output_dir = None
         self.files_to_analyze = []
         
@@ -50,4 +50,4 @@ class DAG_Configuration:
             value = self.dag_config_json.get(variable)  
             return value
         else:
-            raise Exception(f"Missing {variable} config. (./download_wfs_configuration/dag-config.json)")
+            raise Exception(f"Missing {variable} config. (./download_imoveis_sicar_configuration/dag-config.json)")

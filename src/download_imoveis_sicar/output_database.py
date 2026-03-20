@@ -1,8 +1,8 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine # type: ignore
 
-from airflow.hooks.base import BaseHook
+from airflow.hooks.base import BaseHook # type: ignore
 
-from wtf_download_utils.database_facade import DatabaseFacade
+from download_imoveis_sicar_utils.database_facade import DatabaseFacade
 
 
 class OutputDatabase:

@@ -1,8 +1,8 @@
 from time import time
 
-from download_wfs_dags.task_base import TaskBase
-from download_wfs_configuration.dag_config import DAG_Configuration
-from wtf_download_utils.utils import Utils
+from download_imoveis_sicar.task_base import TaskBase
+from download_imoveis_sicar_configuration.dag_config import DAG_Configuration
+from download_imoveis_sicar_utils.utils import Utils
 
 
 class WFSDownload(TaskBase):
@@ -26,7 +26,7 @@ class WFSDownload(TaskBase):
         end_day = logical_date.replace(hour=23, minute=59, second=59)
 
         runs_today = DagRun.find(
-            dag_id="download_wfs_dag",
+            dag_id="download_imoveis_sicar",
             execution_start_date=start_day,
             execution_end_date=end_day
         )
@@ -297,8 +297,8 @@ def task_2_wfs_download(project_dir: str, logical_date):
     import sys
     sys.path.append(project_dir)
     
-    from download_wfs_dags.task_2_wfs_download import WFSDownload
-    from download_wfs_configuration.dag_config import DAG_Configuration
+    from download_imoveis_sicar.task_2_wfs_download import WFSDownload
+    from download_imoveis_sicar_configuration.dag_config import DAG_Configuration
 
     dag_config = DAG_Configuration()
     task = WFSDownload(dag_config)

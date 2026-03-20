@@ -8,9 +8,9 @@ from urllib.parse import urlparse
 
 from psycopg2 import connect
 from psycopg2.extensions import connection
-from pydantic import BaseModel
+from pydantic import BaseModel # type: ignore
 
-from wtf_download_utils.logger import TasksLogger
+from download_imoveis_sicar_utils.logger import TasksLogger
 
 
 # logger = get_logger(__name__, sys.stdout)
