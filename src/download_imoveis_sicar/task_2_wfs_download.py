@@ -33,7 +33,7 @@ class WFSDownload(TaskBase):
         
         self.logger.info(f"Runs today: {len(runs_today)}")
         
-        self.is_first_execution = len(runs_today) == 1
+        # self.is_first_execution = len(runs_today) == 1
         self.is_first_execution = 1
         return self.is_first_execution
         
@@ -41,7 +41,8 @@ class WFSDownload(TaskBase):
         
         if  self.is_first_execution:
             self.logger.info("First execution of the day. Processing all UFs.")
-            self.uf_list = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
+            # self.uf_list = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
+            self.uf_list = ["AC"]
             return self.uf_list
         
         query = """ SELECT state_code FROM public.state_execution_control where should_execute = true; """
@@ -217,6 +218,7 @@ class WFSDownload(TaskBase):
                 self.logger.info(f"Fetching data for UF: {uf}, Year: {self.year}, Filters: {filter}")
 
                 total_records = self.get_total_records(session, base_url, type_name, filter)
+                print(total_records)
                 
                 if total_records == 0:
                     self.logger.info(f"No records found for {uf}")
@@ -280,7 +282,7 @@ class WFSDownload(TaskBase):
                             f.write(response.content)
                         self.inset_download_record(uf, self.year, folder_path, file_name)
                         self.logger.info(f"Saved: {full_file_name}")
-                        
+                    
                     self.update_state_execution_control(uf, self.year, total_records)
                 self.logger.info(f"Total number of pages downloaded for {uf}: {total_pages}")
                 
