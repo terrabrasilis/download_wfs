@@ -242,7 +242,7 @@ class WFSDownload(TaskBase):
                 
                 if total_records == 0:
                     self.logger.info(f"No records found for {uf}")
-                    self.update_state_execution_control(uf, self.year, total_records)
+                    self.update_state_execution_control(uf, self.year, total_records, filter_type)
                     continue
 
                 self.logger.info(f"Total records found: {total_records}")
