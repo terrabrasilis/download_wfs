@@ -41,8 +41,7 @@ class WFSDownload(TaskBase):
         
         if  self.is_first_execution:
             self.logger.info("First execution of the day. Processing all UFs.")
-            # self.uf_list = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
-            self.uf_list = ["AC"]
+            self.uf_list = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
             return self.uf_list
         
         query = """ SELECT state_code FROM public.state_execution_control where should_execute = true; """
@@ -304,7 +303,7 @@ class WFSDownload(TaskBase):
                         self.inset_download_record(uf, self.year, folder_path, file_name)
                         self.logger.info(f"Saved: {full_file_name}")
                     
-                    self.update_state_execution_control(uf, self.year, total_records, filter_type)
+                self.update_state_execution_control(uf, self.year, total_records, filter_type)
                 self.logger.info(f"Total number of pages downloaded for {uf}: {total_pages}")
                 
             self.dag_config.database.commit()
