@@ -34,6 +34,7 @@ class WFSDownload(TaskBase):
         self.logger.info(f"Runs today: {len(runs_today)}")
         
         self.is_first_execution = len(runs_today) == 1
+        self.is_first_execution = 1
         return self.is_first_execution
         
     def get_uf_list(self):
