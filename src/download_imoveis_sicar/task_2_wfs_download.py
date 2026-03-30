@@ -77,8 +77,10 @@ class WFSDownload(TaskBase):
             FROM public.state_execution_control 
             WHERE state_code = '{uf}'
         """
+        print('query', query)
 
         result = self.dag_config.database.fetchone(query)
+        print('result', result)
         if not result:
             return False
         
