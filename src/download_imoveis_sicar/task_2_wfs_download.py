@@ -46,7 +46,6 @@ class WFSDownload(TaskBase):
         
         query = """ SELECT state_code FROM public.state_execution_control where should_execute = true; """
         result = self.dag_config.database.fetchall(query)
-        print(f"UFs to process: {[row[0] for row in result]}")
         self.uf_list = [row[0] for row in result]
         return self.uf_list
     
@@ -65,9 +64,6 @@ class WFSDownload(TaskBase):
                 self.logger.error(f"Error disabling execution for UF {uf}: {e}")
                 
     def validate_and_cleanup_shapefile(self, uf, directory_path, total_records):
-
-        print(self.current_year, self.year)
-        print(str(self.current_year) != str(self.year))
         
         if str(self.current_year) != str(self.year):
             return True
@@ -77,17 +73,12 @@ class WFSDownload(TaskBase):
             FROM public.state_execution_control 
             WHERE state_code = '{uf}'
         """
-        print('query', query)
 
         result = self.dag_config.database.fetchone(query)
-        print('result', result)
         if not result:
             return False
         
-        print(result, total_records)
-        
         if str(result) != str(total_records):
-            print('entrou')
             delete_query = f"""
                 DELETE FROM public.sicar_shapefile_downloads
                 WHERE state_code = '{uf}'
@@ -274,7 +265,6 @@ class WFSDownload(TaskBase):
                     
                     download_file = True
                     file_exists = self.verify_file_exists(folder_path, file_name)
-                    print('file_exists', file_exists)
                     
                     if file_exists:
                         self.logger.info(f"File already exists in database: {folder_path}")
@@ -291,7 +281,7 @@ class WFSDownload(TaskBase):
                         self.inset_download_record(uf, self.year, folder_path, file_name)
                         self.logger.info(f"Saved: {full_file_name}")
                         
-                self.update_state_execution_control(uf, self.year, total_records)
+                    self.update_state_execution_control(uf, self.year, total_records)
                 self.logger.info(f"Total number of pages downloaded for {uf}: {total_pages}")
                 
             self.dag_config.database.commit()
